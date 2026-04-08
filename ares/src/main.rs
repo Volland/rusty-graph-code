@@ -23,6 +23,7 @@ mod ch4;
 mod ch5;
 mod ch6;
 mod ch7;
+mod ch8;
 
 fn data_dir() -> PathBuf {
     // The binary lives in `code/ares/`, the Turtle files live in
@@ -47,6 +48,7 @@ fn main() -> Result<()> {
         "ch5" => ch5::run(&data).context("Chapter 5 failed")?,
         "ch6" => ch6::run(&data).context("Chapter 6 failed")?,
         "ch7" => ch7::run(&data, strict).context("Chapter 7 failed")?,
+        "ch8" => ch8::run(&data).context("Chapter 8 failed")?,
         "all" => {
             chapter_0()?;
             ch1::run(&data).context("Chapter 1 failed")?;
@@ -56,11 +58,12 @@ fn main() -> Result<()> {
             ch5::run(&data).context("Chapter 5 failed")?;
             ch6::run(&data).context("Chapter 6 failed")?;
             ch7::run(&data, strict).context("Chapter 7 failed")?;
+            ch8::run(&data).context("Chapter 8 failed")?;
         }
         other => {
             eprintln!("unknown chapter: {other}");
             eprintln!(
-                "usage: ares [ch0 | ch1 | ch2 | ch3 | ch4 | ch5 | ch6 | ch7 | all] [--strict]"
+                "usage: ares [ch0..ch8 | all] [--strict]"
             );
             std::process::exit(2);
         }

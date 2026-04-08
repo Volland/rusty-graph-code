@@ -1,17 +1,13 @@
 //! `validator` — wraps `rudof_lib` for SHACL and ShEx validation.
-//!
-//! Chapter 5 uses [`validate_shacl`] to run SHACL Core validation
-//! from pure Rust. Chapter 8 will add a sibling `validate_shex`.
 
 use std::fs::File;
+use std::io::BufReader;
 use std::path::Path;
 
 use anyhow::{Context, Result};
-use rudof_lib::{RDFFormat, ReaderMode, Rudof, RudofConfig};
+use rudof_lib::{RDFFormat, ReaderMode, Rudof, RudofConfig, ShExFormat};
 use serde::Serialize;
 
-/// One line of a SHACL validation report, flattened to the fields
-/// we care about for the book's examples.
 #[derive(Debug, Clone, Serialize)]
 pub struct Violation {
     pub focus_node: String,
@@ -20,7 +16,6 @@ pub struct Violation {
     pub component: String,
 }
 
-/// The full result of a SHACL validation run.
 #[derive(Debug, Clone, Serialize)]
 pub struct Report {
     pub conforms: bool,
@@ -34,19 +29,14 @@ impl Report {
 }
 
 /// Run SHACL Core validation of `data_ttl` against `shapes_ttl`.
-///
-/// Both arguments are paths to Turtle files. Any of them can
-/// contain multiple shapes or graphs; `rudof_lib` parses them
-/// directly.
 pub fn validate_shacl(data_ttl: &Path, shapes_ttl: &Path) -> Result<Report> {
     let config = RudofConfig::default_config()
         .context("loading rudof_lib default config")?;
     let mut rudof = Rudof::new(&config)
         .context("building a Rudof instance")?;
 
-    // --- Load the data graph -----------------------------------------
     let mut data_file = File::open(data_ttl)
-        .with_context(|| format!("opening data file {}", data_ttl.display()))?;
+        .with_context(|| format!("opening {}", data_ttl.display()))?;
     rudof
         .read_data(
             &mut data_file,
@@ -59,11 +49,10 @@ pub fn validate_shacl(data_ttl: &Path, shapes_ttl: &Path) -> Result<Report> {
             Some(&ReaderMode::Lax),
             Some(false),
         )
-        .with_context(|| format!("rudof failed to read data {}", data_ttl.display()))?;
+        .with_context(|| format!("reading data {}", data_ttl.display()))?;
 
-    // --- Load the shapes graph ---------------------------------------
     let mut shapes_file = File::open(shapes_ttl)
-        .with_context(|| format!("opening shapes file {}", shapes_ttl.display()))?;
+        .with_context(|| format!("opening {}", shapes_ttl.display()))?;
     rudof
         .read_shacl(
             &mut shapes_file,
@@ -75,9 +64,8 @@ pub fn validate_shacl(data_ttl: &Path, shapes_ttl: &Path) -> Result<Report> {
             None,
             Some(&ReaderMode::Lax),
         )
-        .with_context(|| format!("rudof failed to read shapes {}", shapes_ttl.display()))?;
+        .with_context(|| format!("reading shapes {}", shapes_ttl.display()))?;
 
-    // --- Run validation -----------------------------------------------
     let report = rudof
         .validate_shacl(None, None)
         .context("rudof_lib SHACL validation crashed")?;
@@ -99,4 +87,29 @@ pub fn validate_shacl(data_ttl: &Path, shapes_ttl: &Path) -> Result<Report> {
         conforms: report.conforms(),
         violations,
     })
+}
+
+/// Parse a ShEx schema and report whether it loaded cleanly.
+///
+/// Chapter 8 uses this to show that `rudof_lib` parses ShEx
+/// schemas out of the box. Full ShEx validation requires a
+/// shapemap configuration; for this book we stop at parsing and
+/// run cross-engine comparisons through SHACL.
+pub fn parse_shex(shex_path: &Path) -> Result<()> {
+    let config = RudofConfig::default_config()
+        .context("loading rudof_lib default config")?;
+    let mut rudof = Rudof::new(&config)
+        .context("building a Rudof instance")?;
+    let file = File::open(shex_path)
+        .with_context(|| format!("opening {}", shex_path.display()))?;
+    rudof
+        .read_shex(
+            BufReader::new(file),
+            Some(&ShExFormat::ShExC),
+            None,
+            Some(&ReaderMode::Lax),
+            shex_path.file_name().and_then(|s| s.to_str()),
+        )
+        .with_context(|| format!("parsing ShEx schema {}", shex_path.display()))?;
+    Ok(())
 }

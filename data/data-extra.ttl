@@ -1,0 +1,16 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix ex:   <http://example.org/agent#> .
+
+# Same observation as data.ttl's obs_0001, but with one extra
+# undeclared property ex:mood. Chapter 8 uses this file to show
+# how open-by-default (SHACL) and closed-by-default (ShEx) react
+# to extra properties.
+
+ex:obs_extra a ex:Observation ;
+    ex:assertedBy ex:Ares ;
+    ex:hasSubject ex:Arxiv2401_00123 ;
+    ex:observedAt "2025-01-15T13:00:00Z"^^xsd:dateTime ;
+    ex:confidence "0.88"^^xsd:decimal ;
+    ex:mood       "optimistic" .

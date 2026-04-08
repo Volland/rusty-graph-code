@@ -1,0 +1,21 @@
+prefix ex:   <http://example.org/agent#>
+prefix xsd:  <http://www.w3.org/2001/XMLSchema#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+ex:AgentShape {
+    rdfs:label xsd:string ;
+    ex:agentId xsd:string /^agent-[0-9]+$/
+}
+
+ex:ObservationShape {
+    ex:assertedBy IRI ;
+    ex:hasSubject IRI ;
+    ex:observedAt xsd:dateTime ;
+    ex:confidence xsd:decimal
+}
+
+ex:PromiseShape {
+    ex:promisedBy     IRI ;
+    ex:promisedTo     IRI ;
+    ex:promiseContent xsd:string
+}

@@ -1,0 +1,38 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix ex:   <http://example.org/agent#> .
+
+# A closed version of ObservationShape. Every observation must
+# carry exactly the declared properties and nothing else — this
+# is the SHACL feature that mimics ShEx's default strictness.
+
+ex:ObservationShape a sh:NodeShape ;
+    sh:targetClass       ex:Observation ;
+    sh:closed            true ;
+    sh:ignoredProperties ( rdf:type ex:markedConfident ) ;
+    sh:property [
+        sh:path     ex:assertedBy ;
+        sh:nodeKind sh:IRI ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path     ex:hasSubject ;
+        sh:minCount 1 ;
+    ] ;
+    sh:property [
+        sh:path     ex:observedAt ;
+        sh:datatype xsd:dateTime ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path         ex:confidence ;
+        sh:datatype     xsd:decimal ;
+        sh:minCount     1 ;
+        sh:maxCount     1 ;
+        sh:minInclusive 0.0 ;
+        sh:maxInclusive 1.0 ;
+    ] .
