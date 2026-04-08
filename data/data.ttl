@@ -1,0 +1,10 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ex:  <http://example.org/agent#> .
+
+# Chapter 0 seed data — three concrete agents. Chapter 1 adds
+# observations and named graphs.
+
+ex:Ares     a ex:ResearchAgent ; rdfs:label "Ares" ;     ex:agentId "agent-0001" .
+ex:Calliope a ex:ResearchAgent ; rdfs:label "Calliope" ; ex:agentId "agent-0002" .
+ex:Hermes   a ex:SummaryAgent  ; rdfs:label "Hermes" ;   ex:agentId "agent-0003" .

@@ -1,0 +1,29 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix ex:   <http://example.org/agent#> .
+
+# ---------------------------------------------------------------------------
+# Chapter 0 — initial agent class hierarchy.
+# Chapters 2 and 3 extend this file with properties and OWL axioms.
+# ---------------------------------------------------------------------------
+
+ex:Agent a rdfs:Class ;
+    rdfs:label   "Agent" ;
+    rdfs:comment "An autonomous software agent in the Ares memory graph." .
+
+ex:ResearchAgent a rdfs:Class ;
+    rdfs:subClassOf ex:Agent ;
+    rdfs:label      "Research agent" ;
+    rdfs:comment    "An agent that observes sources and records beliefs." .
+
+ex:SummaryAgent a rdfs:Class ;
+    rdfs:subClassOf ex:Agent ;
+    rdfs:label      "Summary agent" ;
+    rdfs:comment    "An agent that condenses research into summaries." .
+
+ex:CritiqueAgent a rdfs:Class ;
+    rdfs:subClassOf ex:Agent ;
+    rdfs:label      "Critique agent" ;
+    rdfs:comment    "An agent that critiques summaries for correctness." .

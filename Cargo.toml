@@ -1,0 +1,17 @@
+[workspace]
+resolver = "2"
+members = ["graph", "reasoner", "validator", "ares"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.85"
+license = "MIT OR Apache-2.0"
+
+[workspace.dependencies]
+oxigraph = "0.5"
+reasonable = "0.3.3-a4"
+rudof_lib = "0.2"
+anyhow = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
