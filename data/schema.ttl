@@ -5,9 +5,15 @@
 @prefix ex:   <http://example.org/agent#> .
 
 # ---------------------------------------------------------------------------
-# Chapter 0 — initial agent class hierarchy.
-# Chapters 2 and 3 extend this file with properties and OWL axioms.
+# schema.ttl — the agent ontology.
+#
+# Chapter 0 introduced the three top-level agent classes. Chapter 2
+# adds Observation, Paper, property declarations with domain/range,
+# and a ConfidentObservation subclass. Chapter 3 layers OWL axioms
+# on top of this file.
 # ---------------------------------------------------------------------------
+
+# --- Classes ---------------------------------------------------------------
 
 ex:Agent a rdfs:Class ;
     rdfs:label   "Agent" ;
@@ -27,3 +33,68 @@ ex:CritiqueAgent a rdfs:Class ;
     rdfs:subClassOf ex:Agent ;
     rdfs:label      "Critique agent" ;
     rdfs:comment    "An agent that critiques summaries for correctness." .
+
+ex:Observation a rdfs:Class ;
+    rdfs:label   "Observation" ;
+    rdfs:comment "A single first-person perception recorded by an agent." .
+
+ex:ConfidentObservation a rdfs:Class ;
+    rdfs:subClassOf ex:Observation ;
+    rdfs:label      "Confident observation" ;
+    rdfs:comment    "An Observation whose confidence the author marks as high." .
+
+ex:Paper a rdfs:Class ;
+    rdfs:label   "Paper" ;
+    rdfs:comment "A research paper an agent might observe." .
+
+# --- Properties ------------------------------------------------------------
+#
+# rdfs:domain says "if a triple uses this predicate, its subject
+# is an instance of this class". rdfs:range does the same for the
+# object. The store does not enforce these — they are hints for
+# reasoners and for SPARQL property-path queries.
+
+ex:assertedBy a rdf:Property ;
+    rdfs:label   "asserted by" ;
+    rdfs:comment "The agent that created this observation." ;
+    rdfs:domain  ex:Observation ;
+    rdfs:range   ex:Agent .
+
+ex:hasSubject a rdf:Property ;
+    rdfs:label   "has subject" ;
+    rdfs:comment "What an observation is about." ;
+    rdfs:domain  ex:Observation .
+
+ex:observedAt a rdf:Property ;
+    rdfs:label   "observed at" ;
+    rdfs:comment "Wall-clock time at which the observation was recorded." ;
+    rdfs:domain  ex:Observation ;
+    rdfs:range   xsd:dateTime .
+
+ex:confidence a rdf:Property ;
+    rdfs:label   "confidence" ;
+    rdfs:comment "Author-supplied confidence score between 0.0 and 1.0." ;
+    rdfs:domain  ex:Observation ;
+    rdfs:range   xsd:decimal .
+
+ex:hasObserved a rdf:Property ;
+    rdfs:label   "has observed" ;
+    rdfs:comment "Convenience shortcut: an agent that directly observed a thing." ;
+    rdfs:domain  ex:Agent .
+
+ex:believesTrue a rdf:Property ;
+    rdfs:label   "believes true" ;
+    rdfs:comment "Agent-level doxastic commitment: the agent holds this proposition." ;
+    rdfs:domain  ex:Agent .
+
+ex:agentId a rdf:Property ;
+    rdfs:label   "agent id" ;
+    rdfs:comment "Opaque alphanumeric identifier of the agent." ;
+    rdfs:domain  ex:Agent ;
+    rdfs:range   xsd:string .
+
+ex:arxivId a rdf:Property ;
+    rdfs:label   "arXiv id" ;
+    rdfs:comment "An arXiv identifier such as 2401.00123." ;
+    rdfs:domain  ex:Paper ;
+    rdfs:range   xsd:string .
