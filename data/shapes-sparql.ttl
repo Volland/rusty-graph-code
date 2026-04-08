@@ -1,0 +1,49 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix ex:   <http://example.org/agent#> .
+
+# ---------------------------------------------------------------------------
+# shapes-sparql.ttl — SHACL-SPARQL constraints for Chapter 6.
+#
+# Everything here is a constraint that SHACL Core cannot express
+# because it compares two property values of the same focus node,
+# or requires a graph-wide lookup.
+# ---------------------------------------------------------------------------
+
+ex:PromiseSparqlShape a sh:NodeShape ;
+    sh:targetClass ex:Promise ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "A promise's promiser and recipient must be distinct." ;
+        sh:prefixes ex: ;
+        sh:select """
+            PREFIX ex: <http://example.org/agent#>
+            SELECT $this ?value
+            WHERE {
+                $this ex:promisedBy ?who ;
+                      ex:promisedTo ?who .
+                BIND(?who AS ?value)
+            }
+        """
+    ] .
+
+ex:ConfidentObservationSparqlShape a sh:NodeShape ;
+    sh:targetClass ex:Observation ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "A ConfidentObservation must have a matching believesTrue triple." ;
+        sh:prefixes ex: ;
+        sh:select """
+            PREFIX ex: <http://example.org/agent#>
+            SELECT $this ?value
+            WHERE {
+                $this a ex:ConfidentObservation ;
+                      ex:hasSubject ?subject ;
+                      ex:assertedBy ?agent .
+                FILTER NOT EXISTS { ?agent ex:believesTrue ?subject }
+                BIND(?subject AS ?value)
+            }
+        """
+    ] .

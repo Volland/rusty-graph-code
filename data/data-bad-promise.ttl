@@ -1,0 +1,15 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix ex:   <http://example.org/agent#> .
+
+# Chapter 6 uses this file to show a SHACL-SPARQL violation.
+# Ares is promising *himself* to do the summary, which Promise
+# Theory says is nonsense.
+
+ex:Ares     a ex:ResearchAgent ; rdfs:label "Ares" ;     ex:agentId "agent-0001" .
+
+ex:bad_self_promise a ex:Promise ;
+    ex:promisedBy     ex:Ares ;
+    ex:promisedTo     ex:Ares ;
+    ex:promiseContent "SummarizeArxiv2401" .
