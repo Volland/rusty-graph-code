@@ -20,6 +20,7 @@ mod ch1;
 mod ch2;
 mod ch3;
 mod ch4;
+mod ch5;
 
 fn data_dir() -> PathBuf {
     // The binary lives in `code/ares/`, the Turtle files live in
@@ -40,16 +41,18 @@ fn main() -> Result<()> {
         "ch2" => ch2::run(&data).context("Chapter 2 failed")?,
         "ch3" => ch3::run(&data).context("Chapter 3 failed")?,
         "ch4" => ch4::run(&data).context("Chapter 4 failed")?,
+        "ch5" => ch5::run(&data).context("Chapter 5 failed")?,
         "all" => {
             chapter_0()?;
             ch1::run(&data).context("Chapter 1 failed")?;
             ch2::run(&data).context("Chapter 2 failed")?;
             ch3::run(&data).context("Chapter 3 failed")?;
             ch4::run(&data).context("Chapter 4 failed")?;
+            ch5::run(&data).context("Chapter 5 failed")?;
         }
         other => {
             eprintln!("unknown chapter: {other}");
-            eprintln!("usage: ares [ch0 | ch1 | ch2 | ch3 | ch4 | all]");
+            eprintln!("usage: ares [ch0 | ch1 | ch2 | ch3 | ch4 | ch5 | all]");
             std::process::exit(2);
         }
     }
@@ -60,6 +63,5 @@ fn chapter_0() -> Result<()> {
     println!("=== Chapter 0 ================================================");
     println!("Ares agent memory — Chapter 0 scaffold OK");
     let _store: graph::Store = graph::new_store()?;
-    validator::placeholder();
     Ok(())
 }

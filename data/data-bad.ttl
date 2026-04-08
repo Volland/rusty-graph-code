@@ -1,0 +1,23 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix ex:   <http://example.org/agent#> .
+
+# ---------------------------------------------------------------------------
+# data-bad.ttl — Chapter 5 uses this file to show what a SHACL
+# violation looks like. Everything here is deliberately wrong:
+#
+#   - ex:BadAgent has no rdfs:label and an agentId that doesn't
+#     match the required pattern.
+#   - ex:obs_bad has no confidence at all, and its observedAt is
+#     a plain string rather than an xsd:dateTime.
+# ---------------------------------------------------------------------------
+
+ex:BadAgent a ex:ResearchAgent ;
+    ex:agentId "not-a-valid-id" .
+
+ex:obs_bad a ex:Observation ;
+    ex:assertedBy ex:BadAgent ;
+    ex:hasSubject ex:Arxiv2401_00123 ;
+    ex:observedAt "sometime on Tuesday" .

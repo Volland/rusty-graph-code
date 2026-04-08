@@ -1,0 +1,88 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix ex:   <http://example.org/agent#> .
+
+# ---------------------------------------------------------------------------
+# shapes.ttl — SHACL shapes for the Ares agent memory graph.
+#
+# Chapter 5 introduces these three shapes:
+#   - ex:AgentShape       — every ex:Agent must have a label and a valid id.
+#   - ex:ObservationShape — every ex:Observation needs an asserter,
+#                           a subject, a timestamp, and a confidence
+#                           in [0.0, 1.0].
+#   - ex:PromiseShape     — every ex:Promise needs a distinct pair
+#                           of agents and a task name.
+# ---------------------------------------------------------------------------
+
+ex:AgentShape a sh:NodeShape ;
+    sh:targetClass ex:Agent ;
+    sh:property [
+        sh:path     rdfs:label ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:message  "Every agent needs an rdfs:label."
+    ] ;
+    sh:property [
+        sh:path     ex:agentId ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:pattern  "^agent-[0-9]+$" ;
+        sh:message  "ex:agentId must match ^agent-[0-9]+$."
+    ] .
+
+ex:ObservationShape a sh:NodeShape ;
+    sh:targetClass ex:Observation ;
+    sh:property [
+        sh:path     ex:assertedBy ;
+        sh:nodeKind sh:IRI ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message  "An observation must be asserted by exactly one agent."
+    ] ;
+    sh:property [
+        sh:path     ex:hasSubject ;
+        sh:minCount 1 ;
+        sh:message  "An observation must have a subject."
+    ] ;
+    sh:property [
+        sh:path     ex:observedAt ;
+        sh:datatype xsd:dateTime ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message  "An observation must carry an xsd:dateTime observedAt."
+    ] ;
+    sh:property [
+        sh:path         ex:confidence ;
+        sh:datatype     xsd:decimal ;
+        sh:minCount     1 ;
+        sh:maxCount     1 ;
+        sh:minInclusive 0.0 ;
+        sh:maxInclusive 1.0 ;
+        sh:message      "Confidence must be a decimal in [0.0, 1.0]."
+    ] .
+
+ex:PromiseShape a sh:NodeShape ;
+    sh:targetClass ex:Promise ;
+    sh:property [
+        sh:path     ex:promisedBy ;
+        sh:nodeKind sh:IRI ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message  "A promise must name exactly one promising agent."
+    ] ;
+    sh:property [
+        sh:path     ex:promisedTo ;
+        sh:nodeKind sh:IRI ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message  "A promise must name exactly one recipient agent."
+    ] ;
+    sh:property [
+        sh:path     ex:promiseContent ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:message  "A promise must carry a task name (string)."
+    ] .
