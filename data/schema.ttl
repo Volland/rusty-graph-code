@@ -98,3 +98,45 @@ ex:arxivId a rdf:Property ;
     rdfs:comment "An arXiv identifier such as 2401.00123." ;
     rdfs:domain  ex:Paper ;
     rdfs:range   xsd:string .
+
+# ---------------------------------------------------------------------------
+# OWL axioms — added in Chapter 3.
+#
+# Everything above this line is pure RDFS. Everything below is OWL 2 RL.
+# A reasonable reasoner reads these and materializes the closure.
+# ---------------------------------------------------------------------------
+
+# Observation nodes point from observer to subject via ex:hasSubject,
+# but it is often convenient to ask "what has Ares observed?" directly.
+# An inverse axiom lets the reasoner build one-hop shortcuts.
+ex:isObservedBy a owl:ObjectProperty ;
+    owl:inverseOf ex:assertedBy .
+
+# trustsAgent is transitive: if Ares trusts Calliope and Calliope
+# trusts Pythia then Ares trusts Pythia.
+ex:trustsAgent a owl:ObjectProperty, owl:TransitiveProperty ;
+    rdfs:domain ex:Agent ;
+    rdfs:range  ex:Agent .
+
+# A ConfidentObservation is exactly "an Observation marked as
+# confident". OWL 2 RL cannot express numeric thresholds, so the
+# schema treats the marker class as equivalent to having an
+# explicit boolean flag: ex:Observation  ex:markedConfident  true .
+# Any observation with that triple is inferred to be a
+# ConfidentObservation.
+ex:markedConfident a owl:DatatypeProperty ;
+    rdfs:domain ex:Observation ;
+    rdfs:range  xsd:boolean .
+
+# ConfidentObservation is equivalent to the class of observations
+# that carry ex:markedConfident = "true".
+ex:ConfidentObservation owl:equivalentClass [
+    a owl:Restriction ;
+    owl:onProperty ex:markedConfident ;
+    owl:hasValue   "true"^^xsd:boolean
+] .
+
+# assertedBy is functional: every observation has at most one
+# asserter. If we ever find two different asserters on the same
+# observation, OWL reasoning will fuse them via owl:sameAs.
+ex:assertedBy a owl:FunctionalProperty .
