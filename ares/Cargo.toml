@@ -15,4 +15,5 @@ reasoner = { path = "../reasoner" }
 validator = { path = "../validator" }
 oxigraph.workspace = true
 anyhow.workspace = true
+serde.workspace = true
 serde_json.workspace = true

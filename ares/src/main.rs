@@ -22,6 +22,7 @@ mod ch3;
 mod ch4;
 mod ch5;
 mod ch6;
+mod ch7;
 
 fn data_dir() -> PathBuf {
     // The binary lives in `code/ares/`, the Turtle files live in
@@ -34,6 +35,7 @@ fn data_dir() -> PathBuf {
 fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
     let which = args.get(1).map(String::as_str).unwrap_or("all");
+    let strict = args.iter().any(|a| a == "--strict");
 
     let data = data_dir();
     match which {
@@ -44,6 +46,7 @@ fn main() -> Result<()> {
         "ch4" => ch4::run(&data).context("Chapter 4 failed")?,
         "ch5" => ch5::run(&data).context("Chapter 5 failed")?,
         "ch6" => ch6::run(&data).context("Chapter 6 failed")?,
+        "ch7" => ch7::run(&data, strict).context("Chapter 7 failed")?,
         "all" => {
             chapter_0()?;
             ch1::run(&data).context("Chapter 1 failed")?;
@@ -52,10 +55,13 @@ fn main() -> Result<()> {
             ch4::run(&data).context("Chapter 4 failed")?;
             ch5::run(&data).context("Chapter 5 failed")?;
             ch6::run(&data).context("Chapter 6 failed")?;
+            ch7::run(&data, strict).context("Chapter 7 failed")?;
         }
         other => {
             eprintln!("unknown chapter: {other}");
-            eprintln!("usage: ares [ch0 | ch1 | ch2 | ch3 | ch4 | ch5 | ch6 | all]");
+            eprintln!(
+                "usage: ares [ch0 | ch1 | ch2 | ch3 | ch4 | ch5 | ch6 | ch7 | all] [--strict]"
+            );
             std::process::exit(2);
         }
     }
