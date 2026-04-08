@@ -1,10 +1,38 @@
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix ex:  <http://example.org/agent#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix ex:   <http://example.org/agent#> .
 
-# Chapter 0 seed data — three concrete agents. Chapter 1 adds
-# observations and named graphs.
+# ---------------------------------------------------------------------------
+# data.ttl — the default-graph facts about the Ares memory.
+#
+# Chapter 0 introduced three agents. Chapter 1 adds a research paper,
+# Ares's first observation of it, and the observation's confidence
+# and timestamp. Later chapters extend this file further.
+# ---------------------------------------------------------------------------
+
+# --- Agents ----------------------------------------------------------------
 
 ex:Ares     a ex:ResearchAgent ; rdfs:label "Ares" ;     ex:agentId "agent-0001" .
 ex:Calliope a ex:ResearchAgent ; rdfs:label "Calliope" ; ex:agentId "agent-0002" .
 ex:Hermes   a ex:SummaryAgent  ; rdfs:label "Hermes" ;   ex:agentId "agent-0003" .
+
+# --- A paper Ares has observed ---------------------------------------------
+
+ex:Arxiv2401_00123 a ex:Paper ;
+    rdfs:label "Tool-Use in Large Language Models: A Survey" ;
+    ex:arxivId "2401.00123" .
+
+# --- Ares's first observation ----------------------------------------------
+#
+# An observation is a first-class node. It records *who* observed
+# *what*, *when*, and with what *confidence*. Modelling it as a node
+# rather than a direct `ex:Ares ex:hasObserved ex:Arxiv2401_00123`
+# triple is what lets us later attach provenance, timestamps, and
+# trust scores without redesigning the schema.
+
+ex:obs_0001 a ex:Observation ;
+    ex:assertedBy  ex:Ares ;
+    ex:hasSubject  ex:Arxiv2401_00123 ;
+    ex:observedAt  "2025-01-15T09:00:00Z"^^xsd:dateTime ;
+    ex:confidence  "0.92"^^xsd:decimal .
