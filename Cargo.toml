@@ -1,6 +1,10 @@
 [workspace]
 resolver = "2"
-members = ["graph", "reasoner", "validator", "ares"]
+members = ["graph", "reasoner", "validator", "ares", "grafeo_samples"]
+# grafeo_samples pulls in the grafeo crate, which is a heavy optional
+# dependency used only by Chapters 9-12. Default builds skip it; opt in
+# with `cargo build -p grafeo_samples` or `cargo run -p grafeo_samples`.
+default-members = ["graph", "reasoner", "validator", "ares"]
 
 [workspace.package]
 version = "0.1.0"

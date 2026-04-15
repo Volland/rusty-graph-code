@@ -1,0 +1,15 @@
+[package]
+name = "grafeo_samples"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[[bin]]
+name = "grafeo_samples"
+path = "src/main.rs"
+
+[dependencies]
+grafeo = "0.5"
+anyhow.workspace = true
